@@ -1,0 +1,57 @@
+/* ============================================================
+   EFFECTS — radii, gradients, shadows, glow, blur, motion.
+   Systematized from the original site's ad-hoc values:
+   radius 15px cards / 1000px pills / 5px tabs / 3px inputs,
+   white drop-shadow glow on hover, scale(0.95) on press,
+   backdrop blur(10px) glass, framer-motion fades & slides.
+   ============================================================ */
+
+:root {
+  /* --- Corner radii --- */
+  --radius-xs:   3px;    /* inputs (brand) */
+  --radius-sm:   6px;
+  --radius-md:   10px;   /* tabs / square buttons */
+  --radius-lg:   15px;   /* cards (brand value) */
+  --radius-xl:   22px;
+  --radius-pill: 999px;  /* brand buttons */
+
+  /* --- Signature gradients --- */
+  --gradient-brand:      linear-gradient(120deg, #6157FF 0%, #A927B5 100%); /* @kind color */
+  --gradient-brand-soft: linear-gradient(135deg, #6157FF 0%, #8B43DD 50%, #A927B5 100%); /* @kind color */
+  --gradient-brand-br:   linear-gradient(to bottom right, #6157FF, #A927B5); /* @kind color */
+  --gradient-sheen:      linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0) 60%); /* @kind color */
+  --gradient-veil:       linear-gradient(180deg, rgba(11,10,17,0) 0%, rgba(11,10,17,0.55) 100%); /* @kind color */
+
+  /* --- Glass blur --- */
+  --blur-glass: 10px;    /* @kind other */
+  --blur-strong: 18px;   /* @kind other */
+
+  /* --- Elevation shadows --- */
+  --shadow-xs: 0 1px 2px rgba(7, 6, 12, 0.30);
+  --shadow-sm: 0 2px 6px rgba(7, 6, 12, 0.30);
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.20);                 /* brand button */
+  --shadow-lg: 0 12px 30px rgba(7, 6, 12, 0.40);
+  --shadow-xl: 0 24px 60px rgba(7, 6, 12, 0.50);
+  --shadow-card: 0 18px 44px rgba(7, 6, 12, 0.45);
+
+  /* --- Glow (brand signature: luminous white hover) --- */
+  --glow-white-sm: 0 0 5px rgba(255, 255, 255, 0.9);
+  --glow-white-md: 0 0 12px rgba(255, 255, 255, 0.55);
+  --glow-white-lg: 0 0 20px rgba(255, 255, 255, 0.80);
+  --glow-brand:    0 0 22px rgba(97, 87, 255, 0.55);
+  --glow-magenta:  0 0 22px rgba(169, 39, 181, 0.50);
+  --halo-soft:     1px 1px 15px rgba(200, 199, 199, 0.55);   /* brand image halo */
+
+  /* --- Focus ring --- */
+  --ring: 0 0 0 3px var(--focus-ring);
+
+  /* --- Motion (framer-motion-derived) --- */
+  --ease-out:    cubic-bezier(0.16, 1, 0.3, 1);    /* @kind other */
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);   /* @kind other */
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);/* @kind other */
+  --dur-fast:   120ms;   /* @kind other */
+  --dur-base:   240ms;   /* @kind other */
+  --dur-slow:   400ms;   /* @kind other */
+  --dur-enter:  800ms;   /* @kind other */
+  --press-scale: 0.95;   /* @kind other */
+}

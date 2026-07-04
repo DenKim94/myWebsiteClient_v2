@@ -1,0 +1,80 @@
+/* ============================================================
+   COLORS — Denis Kim Portfolio Design System
+   Refined from the original myWebsite_client palette:
+   signature indigo→magenta gradient (#6157FF → #A927B5),
+   violet-tinted ink neutrals, glass surfaces over the gradient.
+   ============================================================ */
+
+:root {
+  /* --- Brand ramp: the signature violet→magenta identity --- */
+  --brand-indigo:      #6157FF;  /* primary — original gradient start */
+  --brand-indigo-600:  #5249E6;
+  --brand-indigo-700:  #443BC4;
+  --brand-violet:      #8B43DD;  /* refined harmonic midpoint */
+  --brand-magenta:     #A927B5;  /* accent — original gradient end */
+  --brand-magenta-600: #94229F;
+  --brand-pink:        #C24FCE;  /* soft tint for highlights */
+
+  /* Subtle tints for washes / focus rings over dark glass */
+  --brand-indigo-tint:  rgba(97, 87, 255, 0.16);
+  --brand-magenta-tint: rgba(169, 39, 181, 0.16);
+
+  /* --- Ink neutrals: violet-tinted darks (refined from pure #000) --- */
+  --ink-950: #0B0A11;  /* deepest backdrop */
+  --ink-900: #0E0C14;  /* page ink / card base */
+  --ink-850: #15131C;  /* header & footer (was pure #000) */
+  --ink-800: #1C1926;
+  --ink-700: #26222F;  /* chip / control surface (refined from #2A282B) */
+  --ink-600: #332E3E;
+  --ink-500: #4A4458;
+
+  /* --- Light neutrals (form fields, light-on-dark accents) --- */
+  --paper:    #FFFFFF;
+  --paper-95: #F6F5FA;
+  --paper-90: #ECEAF2;
+  --line-300: #D5D2DE;
+  --line-400: #B6B1C4;
+
+  /* --- Text on the dark/gradient canvas --- */
+  --text-primary:   #FFFFFF;
+  --text-secondary: rgba(255, 255, 255, 0.74);
+  --text-muted:     rgba(255, 255, 255, 0.52);
+  --text-faint:     rgba(255, 255, 255, 0.34);
+  /* Text on light surfaces (inputs, light cards) */
+  --text-on-light:        #15131C;
+  --text-on-light-muted:  #595366;
+
+  /* --- Hairlines & dividers --- */
+  --border-glass:     rgba(255, 255, 255, 0.12);
+  --border-glass-str: rgba(255, 255, 255, 0.20);
+  --border-on-light:  rgba(21, 19, 28, 0.85);
+
+  /* --- Semantic --- */
+  --success: #2FB57A;
+  --success-tint: rgba(47, 181, 122, 0.16);
+  --danger:  #E5484D;
+  --danger-tint: rgba(229, 72, 77, 0.16);
+  --warning: #E0A23C;
+  --info:    var(--brand-indigo);
+
+  /* ============================================================
+     SEMANTIC ALIASES — reference these in components
+     ============================================================ */
+  --bg-page:        var(--ink-900);
+  --bg-canvas:      var(--gradient-brand);     /* defined in effects.css */
+  --surface-header: var(--ink-850);
+  --surface-card:   rgba(14, 12, 20, 0.85);    /* glass card over gradient */
+  --surface-control: var(--ink-700);
+  --surface-input:  var(--paper);
+
+  --text-body:      var(--text-secondary);
+  --text-heading:   var(--text-primary);
+  --text-link:      var(--text-primary);
+
+  --border-card:    var(--border-glass);
+  --border-input:   var(--border-on-light);
+
+  --accent:         var(--brand-indigo);
+  --accent-2:       var(--brand-magenta);
+  --focus-ring:     rgba(97, 87, 255, 0.55);
+}

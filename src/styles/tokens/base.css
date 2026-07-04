@@ -1,0 +1,92 @@
+/* ============================================================
+   BASE — element defaults built on the design tokens.
+   Mirrors the original site's global resets, refined.
+   ============================================================ */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  font-size: var(--type-body-size);
+  font-weight: var(--fw-regular);
+  line-height: var(--leading-normal);
+  color: var(--text-primary);
+  background: var(--gradient-brand) fixed;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-synthesis: none;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  color: var(--text-heading);
+  margin: 0 0 0.5em;
+  line-height: var(--leading-tight);
+  font-weight: var(--fw-bold);
+}
+
+h1 { font-size: var(--type-h1-size); }
+h2 { font-size: var(--type-h2-size); font-weight: var(--type-h2-weight); }
+h3 { font-size: var(--type-h3-size); font-weight: var(--type-h3-weight); }
+
+p {
+  margin: 0 0 1em;
+  line-height: var(--type-body-leading);
+}
+
+a {
+  color: var(--text-link);
+  text-decoration: none;
+  transition: filter var(--dur-base) var(--ease-out),
+              color var(--dur-base) var(--ease-out);
+}
+
+a:hover {
+  filter: drop-shadow(var(--glow-white-md));
+}
+
+small { font-size: var(--text-sm); }
+
+code, kbd, samp, pre {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+}
+
+img, svg, video {
+  display: block;
+  max-width: 100%;
+}
+
+button {
+  font-family: inherit;
+}
+
+::selection {
+  background: var(--brand-magenta);
+  color: #fff;
+}
+
+:focus-visible {
+  outline: none;
+  box-shadow: var(--ring);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

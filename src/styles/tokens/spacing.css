@@ -1,0 +1,41 @@
+/* ============================================================
+   SPACING & LAYOUT — 8px-based scale + brand layout metrics
+   (header height, section widths) lifted from the original
+   index.css custom properties.
+   ============================================================ */
+
+:root {
+  /* --- Spacing scale (8px base) --- */
+  --space-0:   0;
+  --space-1:   4px;
+  --space-2:   8px;
+  --space-3:   12px;
+  --space-4:   16px;
+  --space-5:   20px;
+  --space-6:   24px;
+  --space-8:   32px;
+  --space-10:  40px;
+  --space-12:  48px;
+  --space-16:  64px;
+  --space-20:  80px;
+  --space-24:  96px;
+
+  /* --- Brand layout metrics (from original site) --- */
+  --app-min-width:      360px;
+  --header-height:      60px;
+  --footer-height:      50px;
+  --sidebar-width:      250px;
+  --section-max-width:  1600px;
+  --content-gutter:     15%;     /* --padding-relValue */
+  --content-pad-top:    50px;
+  --logo-margin-left:   35px;
+  --footer-margin-right:35px;
+
+  /* --- Component sizing --- */
+  --card-max-width:     1440px;  /* sections * 0.9 */
+  --card-min-height:    140px;
+  --control-height:     40px;
+  --control-height-sm:  32px;
+  --input-height:       44px;    /* min 44px hit target (was 30px) */
+  --tap-target-min:     44px;
+}
