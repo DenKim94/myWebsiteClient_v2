@@ -58,7 +58,7 @@ export function LanguageSwitcher() {
         <GlobeIcon />
         <span className="lang-code">{lang.toUpperCase()}</span>
         <span className={'lang-caret' + (open ? ' open' : '')} aria-hidden="true">
-          ▾
+          ▽
         </span>
       </button>
 
