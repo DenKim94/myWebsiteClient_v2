@@ -64,7 +64,8 @@ export function Contact() {
           style={{
             textAlign: 'center',
             fontSize: 'var(--text-2xl)',
-            margin: '0 0 var(--space-3)',
+            /* Abstand Überschrift → Container um 35% vergrößert (12px → ~16.2px). */
+            margin: '0 0 calc(var(--space-3) * 1.35)',
             color: 'var(--text-primary)',
             fontWeight: 'var(--fw-bold)' as unknown as number,
           }}

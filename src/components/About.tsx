@@ -94,6 +94,7 @@ function PhotoSlider({ images }: { images: string[] }) {
   const slots = images.length > 0 ? images : [''];
   const [idx, setIdx] = useState(0);
   const go = (n: number) => setIdx((n + slots.length) % slots.length);
+  const activeName = slots[idx];
 
   return (
     <div className="photo-slider">
@@ -108,17 +109,16 @@ function PhotoSlider({ images }: { images: string[] }) {
         </button>
 
         <div className="slider-viewport">
-          <div className="slider-track" style={{ transform: `translateX(-${idx * 100}%)` }}>
-            {slots.map((name, i) => (
-              <div className="slider-slide" key={name || i}>
-                {name ? (
-                  <CachedImage name={name} alt={t.about.photoAlt(i + 1)} />
-                ) : (
-                  <div className="slot-empty">{t.about.noPhoto}</div>
-                )}
-              </div>
-            ))}
-          </div>
+          {activeName ? (
+            <CachedImage
+              key={activeName}
+              name={activeName}
+              alt={t.about.photoAlt(idx + 1)}
+              className="slider-photo"
+            />
+          ) : (
+            <div className="slot-empty">{t.about.noPhoto}</div>
+          )}
         </div>
 
         <button
@@ -174,7 +174,8 @@ export function About() {
           style={{
             textAlign: 'center',
             fontSize: 'var(--text-2xl)',
-            margin: '0 0 var(--space-3)',
+            /* Abstand Überschrift → Container um 35% vergrößert (12px → ~16.2px). */
+            margin: '0 0 calc(var(--space-3) * 1.35)',
             color: 'var(--text-primary)',
             fontWeight: 'var(--fw-bold)' as unknown as number,
           }}

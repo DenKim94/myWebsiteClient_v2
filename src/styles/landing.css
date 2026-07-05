@@ -388,63 +388,78 @@ section { scroll-margin-top: var(--header-height); }
 /* ---- Lebensweg-Tab: Fotoslider + Text scrollen gemeinsam im Container ---- */
 .about-life { display: flex; flex-direction: column; }
 
-/* ---- Fotoslider ---- */
+/* ---- Fotoslider ----
+   Das aktive Foto wird in seinem natürlichen Seitenverhältnis dargestellt:
+   kein Beschnitt (vollständig sichtbar) und kein leerer Rand/Rahmen. Höhe und
+   Breite werden nur nach oben begrenzt (`--slider-h` bzw. die Containerbreite),
+   sodass die Komponente auch auf schmalen Viewports groß bleibt (nicht schrumpft). */
 .photo-slider {
+  --slider-h: 340px;
   flex: none;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--space-3);
-}
-.slider-row {
-  display: flex;
-  align-items: center;
-  justify-content: center;
   gap: var(--space-4);
   width: 100%;
 }
-.slider-viewport {
-  width: min(560px, 100%);
-  /* 10% höher als das ursprüngliche 16/7-Format (16 / (7 * 1.1) = 16 / 7.7) */
-  aspect-ratio: 16 / 7.7;
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.10);
-}
-.slider-track {
+.slider-row {
+  position: relative;
   display: flex;
+  align-items: center;
+  justify-content: center;
   width: 100%;
-  height: 100%;
-  transition: transform var(--dur-base) var(--ease-out);
+  min-height: var(--slider-h);
 }
-.slider-slide {
-  flex: 0 0 100%;
-  height: 100%;
-  padding: var(--space-2);
+.slider-viewport {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  max-width: 100%;
 }
-.slider-slide img,
-.slider-slide .slot-empty {
-  width: 100%; height: 100%; display: block;
-  /* Fotos vollständig (ohne Beschnitt) anzeigen */
-  object-fit: contain;
-  border-radius: 16px;
+.slider-photo {
+  display: block;
+  max-height: var(--slider-h);
+  max-width: 100%;
+  width: auto;
+  height: auto;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  animation: slider-fade var(--dur-base) var(--ease-out);
+}
+@keyframes slider-fade {
+  from { opacity: 0; transform: scale(0.98); }
+  to   { opacity: 1; transform: scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .slider-photo { animation: none; }
 }
 .slot-empty {
-  display: grid; place-items: center;
+  display: grid;
+  place-items: center;
+  width: var(--slider-h);
+  max-width: 100%;
+  height: var(--slider-h);
+  border-radius: var(--radius-lg);
   background: rgba(255, 255, 255, 0.05);
   color: var(--text-muted);
   font-size: var(--text-sm);
 }
+/* Pfeile schweben über den Fotorändern, damit das Foto die volle Breite nutzen
+   kann (wichtig für die mobile Ansicht). */
 .slider-arrow {
-  flex: none;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
   display: flex;
   align-items: center;
   justify-content: center;
   width: 40px; height: 40px;
   border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(18, 16, 28, 0.55);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
   color: var(--text-primary);
   font-size: 22px;
   line-height: 1;
@@ -452,9 +467,11 @@ section { scroll-margin-top: var(--header-height); }
   cursor: pointer;
   transition: background var(--dur-base) var(--ease-out), border-color var(--dur-base) var(--ease-out), transform var(--dur-fast) var(--ease-out);
 }
+.slider-arrow.prev { left: var(--space-3); }
+.slider-arrow.next { right: var(--space-3); }
 .slider-arrow span { display: block; transform: translateY(-1px); }
-.slider-arrow:hover { background: rgba(255, 255, 255, 0.10); border-color: rgba(255, 255, 255, 0.28); }
-.slider-arrow:active { transform: scale(0.94); }
+.slider-arrow:hover { background: rgba(18, 16, 28, 0.75); border-color: rgba(255, 255, 255, 0.34); }
+.slider-arrow:active { transform: translateY(-50%) scale(0.94); }
 .slider-dots {
   display: flex;
   justify-content: center;
@@ -471,6 +488,12 @@ section { scroll-margin-top: var(--header-height); }
 .slider-dots .dot.active { background: var(--brand-pink); }
 
 /* ---- Responsive ---- */
+/* Desktop: Hero-Container (Text, Titelbild, Buttons) insgesamt ~15% nach unten
+   verschieben. Gilt bewusst NUR für die Desktop-Ansicht (>=901px); die mobile
+   Ansicht bleibt unverändert. */
+@media (min-width: 901px) {
+  .hero-grid { margin-top: 15vh; }
+}
 @media (max-width: 900px) {
   .hero-grid {
     grid-template-columns: 1fr !important;
@@ -492,8 +515,9 @@ section { scroll-margin-top: var(--header-height); }
   .about-tabs button > span:not([aria-hidden]) { display: none; }
   .about-tabs button { padding-left: var(--space-2) !important; padding-right: var(--space-2) !important; }
   .about-content { height: 320px; }
-  .slider-arrow { width: 32px; height: 32px; font-size: 18px; }
-  .slider-row { gap: var(--space-2); }
+  /* Foto-Container auf Mobil nicht schrumpfen lassen (großzügige Höhe). */
+  .photo-slider { --slider-h: 300px; }
+  .slider-arrow { width: 34px; height: 34px; font-size: 19px; }
   .about-life { gap: var(--space-4); }
 }
 

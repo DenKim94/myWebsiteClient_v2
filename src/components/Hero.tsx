@@ -33,7 +33,9 @@ export function Hero() {
           gap: 'var(--space-16)',
           alignItems: 'center',
           maxWidth: 'var(--section-max-width)',
-          margin: '0 auto',
+          /* Nur horizontal zentrieren; der vertikale Desktop-Offset (~15% nach
+             unten) wird in landing.css via `margin-top` gesetzt. */
+          marginInline: 'auto',
           width: '100%',
         }}
       >
