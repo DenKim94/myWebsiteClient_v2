@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Button, Tag } from '../ds';
 import { CachedImage } from './CachedImage';
 import { usePortfolio } from '../context/PortfolioContext';
+import { useI18n } from '../i18n/LanguageContext';
 import { icons } from '../assets/icons';
 import type { Project } from '../types/portfolio';
 
@@ -12,6 +13,7 @@ function isLive(url: string): boolean {
 
 /** Large project card matching the design's portfolio entry. */
 function BigProjectCard({ project }: { project: Project }) {
+  const { t } = useI18n();
   const [hover, setHover] = useState(false);
   const live = isLive(project.url);
 
@@ -72,14 +74,14 @@ function BigProjectCard({ project }: { project: Project }) {
           </h3>
 
           {live ? (
-            <span className="proj-meta-link" title="Eine Live-Version ist verfügbar">
+            <span className="proj-meta-link" title={t.projects.liveTitle}>
               <span className="live-dot" aria-hidden="true" />
-              Live
+              {t.projects.live}
             </span>
           ) : (
-            <span className="proj-meta-link" title="Quellcode auf GitHub verfügbar">
+            <span className="proj-meta-link" title={t.projects.repoTitle}>
               <img src={icons.github} width={16} height={16} alt="" aria-hidden="true" />
-              GitHub-Repo
+              {t.projects.repo}
             </span>
           )}
 
@@ -96,6 +98,7 @@ function BigProjectCard({ project }: { project: Project }) {
       </header>
 
       <p
+        className="project-desc"
         style={{
           margin: 0,
           fontSize: 'var(--text-base)',
@@ -129,7 +132,7 @@ function BigProjectCard({ project }: { project: Project }) {
             />
           }
         >
-          {live ? 'Live-Version öffnen' : 'Quellcode ansehen'}
+          {live ? t.projects.openLive : t.projects.viewSource}
         </Button>
       </div>
     </article>
@@ -139,6 +142,7 @@ function BigProjectCard({ project }: { project: Project }) {
 /** PORTFOLIO section — grid of project cards driven by the backend. */
 export function Projects() {
   const { portfolio, loading, error } = usePortfolio();
+  const { lang, t } = useI18n();
 
   return (
     <section
@@ -156,10 +160,10 @@ export function Projects() {
             fontWeight: 'var(--fw-bold)' as unknown as number,
           }}
         >
-          Meine Projekte
+          {t.projects.title}
         </h2>
         <p
-          lang="de"
+          lang={lang}
           style={{
             textAlign: 'justify',
             textAlignLast: 'center',
@@ -172,18 +176,14 @@ export function Projects() {
             margin: '0 auto var(--space-12)',
           }}
         >
-          Im Rahmen meiner kontinuierlichen fachlichen Weiterbildung setze ich auch in meiner Freizeit
-          diverse Entwicklungsprojekte von der Konzeption über die Implementierung bis zum Deployment
-          eigenständig um.
+          {t.projects.intro}
         </p>
 
         {error && (
-          <p style={{ textAlign: 'center', color: 'var(--danger)' }}>
-            Projekte konnten nicht geladen werden: {error}
-          </p>
+          <p style={{ textAlign: 'center', color: 'var(--danger)' }}>{t.projects.error(error)}</p>
         )}
         {loading && !portfolio && (
-          <p style={{ textAlign: 'center', color: 'var(--text-muted)' }}>Projekte werden geladen …</p>
+          <p style={{ textAlign: 'center', color: 'var(--text-muted)' }}>{t.projects.loading}</p>
         )}
 
         {portfolio && (

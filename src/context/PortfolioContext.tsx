@@ -1,5 +1,7 @@
-import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
 import { fetchPortfolio } from '../api/apiClient';
+import { useI18n } from '../i18n/LanguageContext';
+import type { Language } from '../i18n/translations';
 import type { Portfolio } from '../types/portfolio';
 
 interface PortfolioContextValue {
@@ -11,18 +13,32 @@ interface PortfolioContextValue {
 const PortfolioContext = createContext<PortfolioContextValue | undefined>(undefined);
 
 /**
- * Provides the portfolio data (loaded once from the backend) to the component
- * tree — the "Context/API-Layer" of the architecture.
+ * Provides the portfolio data (loaded from the backend for the active language)
+ * to the component tree — the "Context/API-Layer" of the architecture. When the
+ * language changes the data is re-fetched; already loaded languages are served
+ * from an in-memory cache to avoid redundant round-trips.
  */
 export function PortfolioProvider({ children }: { children: ReactNode }) {
+  const { lang } = useI18n();
+  const cache = useRef<Map<Language, Portfolio>>(new Map());
   const [portfolio, setPortfolio] = useState<Portfolio | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    const cached = cache.current.get(lang);
+    if (cached) {
+      setPortfolio(cached);
+      setError(null);
+      setLoading(false);
+      return;
+    }
+
     const controller = new AbortController();
-    fetchPortfolio(controller.signal)
+    setLoading(true);
+    fetchPortfolio(lang, controller.signal)
       .then((data) => {
+        cache.current.set(lang, data);
         setPortfolio(data);
         setError(null);
       })
@@ -34,7 +50,7 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
         if (!controller.signal.aborted) setLoading(false);
       });
     return () => controller.abort();
-  }, []);
+  }, [lang]);
 
   return (
     <PortfolioContext.Provider value={{ portfolio, loading, error }}>

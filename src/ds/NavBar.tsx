@@ -13,14 +13,17 @@ interface NavBarProps {
   items: NavItem[];
   activeId?: string;
   onNavigate?: (id: string) => void;
+  /** Optional element rendered at the end of the nav (e.g. a language switcher). */
+  trailing?: ReactNode;
   style?: CSSProperties;
 }
 
 /**
  * NavBar — the fixed header: wordmark on the left, nav links on the right with
- * the brand's white-glow hover. The last item can be a contact CTA.
+ * the brand's white-glow hover. The last item can be a contact CTA and an
+ * optional `trailing` element (e.g. the language switcher) follows the links.
  */
-export function NavBar({ brand = 'Denis Kim', items, activeId, onNavigate, style = {} }: NavBarProps) {
+export function NavBar({ brand = 'Denis Kim', items, activeId, onNavigate, trailing, style = {} }: NavBarProps) {
   return (
     <header
       style={{
@@ -48,6 +51,7 @@ export function NavBar({ brand = 'Denis Kim', items, activeId, onNavigate, style
         {items.map((it) => (
           <NavLink key={it.id} item={it} active={it.id === activeId} onNavigate={onNavigate} />
         ))}
+        {trailing}
       </nav>
     </header>
   );
@@ -67,6 +71,7 @@ function NavLink({
   return (
     <a
       href={item.href ?? '#'}
+      className={isCta ? 'nav-cta' : undefined}
       onClick={(e) => {
         if (onNavigate) {
           e.preventDefault();

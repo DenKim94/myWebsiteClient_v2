@@ -1,15 +1,17 @@
 import { useEffect, useMemo, useState } from 'react';
-import { NavBar } from './ds';
+import { NavBar, type NavItem } from './ds';
 import { DKLogo } from './components/DKLogo';
 import { Hero } from './components/Hero';
 import { Projects } from './components/Projects';
 import { About } from './components/About';
 import { Contact } from './components/Contact';
 import { Footer } from './components/Footer';
+import { LanguageSwitcher } from './components/LanguageSwitcher';
 import { usePortfolio } from './context/PortfolioContext';
+import { useI18n } from './i18n/LanguageContext';
 import { useScrollSpy } from './hooks/useScrollSpy';
 import { useReveal } from './hooks/useReveal';
-import { NAV_ITEMS, SECTIONS } from './constants';
+import { NAV_STRUCTURE, SECTIONS } from './constants';
 
 /** Smoothly scrolls to a section by id. */
 function scrollToId(id: string): void {
@@ -22,6 +24,13 @@ export function App() {
   const active = useScrollSpy(sectionIds);
   const [menuOpen, setMenuOpen] = useState(false);
   const { portfolio } = usePortfolio();
+  const { t } = useI18n();
+
+  // Build the navigation items with labels for the active language.
+  const navItems: NavItem[] = useMemo(
+    () => NAV_STRUCTURE.map((item) => ({ ...item, label: t.nav[item.id] })),
+    [t],
+  );
 
   // Re-observe reveal elements once the project data has rendered.
   useReveal([Boolean(portfolio)]);
@@ -39,10 +48,16 @@ export function App() {
   return (
     <>
       <div className="kit-header">
-        <NavBar brand={<DKLogo />} activeId={active} onNavigate={go} items={NAV_ITEMS} />
+        <NavBar
+          brand={<DKLogo />}
+          activeId={active}
+          onNavigate={go}
+          items={navItems}
+          trailing={<LanguageSwitcher />}
+        />
         <button
           className="nav-burger"
-          aria-label="Menü öffnen"
+          aria-label={t.a11y.openMenu}
           aria-expanded={menuOpen}
           onClick={() => setMenuOpen(true)}
         >
@@ -59,11 +74,11 @@ export function App() {
       />
 
       <aside className={'nav-drawer' + (menuOpen ? ' open' : '')} aria-hidden={!menuOpen}>
-        <button className="nav-drawer-close" aria-label="Menü schließen" onClick={() => setMenuOpen(false)}>
+        <button className="nav-drawer-close" aria-label={t.a11y.closeMenu} onClick={() => setMenuOpen(false)}>
           ×
         </button>
         <nav className="nav-drawer-links">
-          {NAV_ITEMS.map((it) => (
+          {navItems.map((it) => (
             <a
               key={it.id}
               href={'#' + it.id}
@@ -78,6 +93,9 @@ export function App() {
             </a>
           ))}
         </nav>
+        <div className="nav-drawer-lang">
+          <LanguageSwitcher />
+        </div>
       </aside>
 
       <main className="kit-main">

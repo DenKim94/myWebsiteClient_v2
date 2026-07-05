@@ -30,6 +30,14 @@ export function useTypewriter(words: string[], options: TypewriterOptions = {}):
   const [index, setIndex] = useState(0);
   const [phase, setPhase] = useState<Phase>('typing');
 
+  // Restart the animation cleanly whenever the word list changes (e.g. on a
+  // language switch), so the visible text never jumps mid-word.
+  useEffect(() => {
+    setText(reduce ? (words[words.length - 1] ?? '') : '');
+    setIndex(0);
+    setPhase('typing');
+  }, [words, reduce]);
+
   useEffect(() => {
     if (reduce) return undefined;
     const word = words[index % words.length] ?? '';

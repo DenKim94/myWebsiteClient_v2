@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Checkbox } from '../ds';
+import { useI18n } from '../i18n/LanguageContext';
 
 interface CaptchaProps {
   /** Called with a verification token, or `null` when not (yet) verified. */
@@ -16,6 +17,7 @@ const SITE_KEY: string = import.meta.env.VITE_CAPTCHA_SITE_KEY ?? '';
  * resulting token is verified server-side before an e-mail is sent.
  */
 export function Captcha({ onVerify }: CaptchaProps) {
+  const { t } = useI18n();
   const [checked, setChecked] = useState(false);
   // Honeypot: real users never see or fill this; bots typically do.
   const [honeypot, setHoneypot] = useState('');
@@ -51,11 +53,10 @@ export function Captcha({ onVerify }: CaptchaProps) {
         aria-hidden="true"
         style={{ position: 'absolute', left: '-9999px', width: 1, height: 1, opacity: 0 }}
       />
-      <Checkbox checked={checked} onChange={setChecked} label="Ich bin kein Roboter." />
+      <Checkbox checked={checked} onChange={setChecked} label={t.captcha.label} />
       {SITE_KEY === '' && (
         <span style={{ fontSize: 'var(--text-2xs)', color: 'var(--text-muted)' }}>
-          Entwicklungsmodus: Platzhalter-Captcha. Für die Produktion einen Anbieter
-          (reCAPTCHA/hCaptcha) via VITE_CAPTCHA_SITE_KEY einbinden.
+          {t.captcha.devHint}
         </span>
       )}
     </div>

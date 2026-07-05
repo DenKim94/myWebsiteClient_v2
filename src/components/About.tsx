@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { Card, Tabs, type TabItem } from '../ds';
 import { CachedImage } from './CachedImage';
 import { usePortfolio } from '../context/PortfolioContext';
+import { useI18n } from '../i18n/LanguageContext';
+import type { Messages } from '../i18n/translations';
 import { icons } from '../assets/icons';
 
 interface TimelineItemProps {
@@ -88,6 +90,7 @@ function TimelineItem({ top, mid, sub, period, duties }: TimelineItemProps) {
 
 /** Manually navigable photo slider for the "Lebensweg" tab. */
 function PhotoSlider({ images }: { images: string[] }) {
+  const { t } = useI18n();
   const slots = images.length > 0 ? images : [''];
   const [idx, setIdx] = useState(0);
   const go = (n: number) => setIdx((n + slots.length) % slots.length);
@@ -99,7 +102,7 @@ function PhotoSlider({ images }: { images: string[] }) {
           type="button"
           className="slider-arrow prev"
           onClick={() => go(idx - 1)}
-          aria-label="Vorheriges Foto"
+          aria-label={t.about.prevPhoto}
         >
           <span>‹</span>
         </button>
@@ -109,9 +112,9 @@ function PhotoSlider({ images }: { images: string[] }) {
             {slots.map((name, i) => (
               <div className="slider-slide" key={name || i}>
                 {name ? (
-                  <CachedImage name={name} alt={`Lebensweg-Foto ${i + 1}`} />
+                  <CachedImage name={name} alt={t.about.photoAlt(i + 1)} />
                 ) : (
-                  <div className="slot-empty">Kein Foto</div>
+                  <div className="slot-empty">{t.about.noPhoto}</div>
                 )}
               </div>
             ))}
@@ -122,19 +125,19 @@ function PhotoSlider({ images }: { images: string[] }) {
           type="button"
           className="slider-arrow next"
           onClick={() => go(idx + 1)}
-          aria-label="Nächstes Foto"
+          aria-label={t.about.nextPhoto}
         >
           <span>›</span>
         </button>
       </div>
 
-      <div className="slider-dots" role="tablist" aria-label="Foto auswählen">
+      <div className="slider-dots" role="tablist" aria-label={t.about.selectPhoto}>
         {slots.map((name, i) => (
           <button
             type="button"
             key={name || i}
             className={'dot' + (i === idx ? ' active' : '')}
-            aria-label={`Foto ${i + 1} anzeigen`}
+            aria-label={t.about.showPhoto(i + 1)}
             aria-current={i === idx}
             onClick={() => go(i)}
           />
@@ -144,16 +147,21 @@ function PhotoSlider({ images }: { images: string[] }) {
   );
 }
 
-const TABS: TabItem[] = [
-  { id: 'job', label: 'Berufsweg', icon: icons.work },
-  { id: 'edu', label: 'Bildungsweg', icon: icons.education },
-  { id: 'life', label: 'Lebensweg', icon: icons.person },
-];
+/** Builds the about-section tabs for the active language. */
+function buildTabs(t: Messages): TabItem[] {
+  return [
+    { id: 'job', label: t.about.tabs.job, icon: icons.work },
+    { id: 'edu', label: t.about.tabs.edu, icon: icons.education },
+    { id: 'life', label: t.about.tabs.life, icon: icons.person },
+  ];
+}
 
 /** ABOUT section — tabbed timeline (career / education / life) + photo slider. */
 export function About() {
   const [tab, setTab] = useState('job');
   const { portfolio } = usePortfolio();
+  const { t } = useI18n();
+  const tabs = buildTabs(t);
 
   const experience = portfolio?.experience ?? [];
   const education = portfolio?.education ?? [];
@@ -171,14 +179,14 @@ export function About() {
             fontWeight: 'var(--fw-bold)' as unknown as number,
           }}
         >
-          Über mich
+          {t.about.title}
         </h2>
 
-        <Card padding="var(--space-8)" style={{ height: '520px' }}>
+        <Card padding="var(--space-8)" style={{ height: '624px' }}>
           <div className="about-tabs" style={{ marginBottom: 'var(--space-8)' }}>
-            <Tabs activeId={tab} onChange={setTab} tabs={TABS} />
+            <Tabs activeId={tab} onChange={setTab} tabs={tabs} />
           </div>
-          <div className="about-content" style={{ textAlign: 'left', height: '380px' }}>
+          <div className="about-content" style={{ textAlign: 'left', height: '484px' }}>
             {tab === 'job' &&
               experience.map((j, i) => (
                 <TimelineItem

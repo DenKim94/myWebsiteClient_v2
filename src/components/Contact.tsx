@@ -2,12 +2,14 @@ import { useState } from 'react';
 import { Button, Card, Checkbox, Input, Textarea } from '../ds';
 import { Captcha } from './Captcha';
 import { postContact } from '../api/apiClient';
+import { useI18n } from '../i18n/LanguageContext';
 import { icons } from '../assets/icons';
 
 type Status = 'idle' | 'sending' | 'success' | 'error';
 
 /** CONTACT section — form wired to the backend e-mail service with captcha. */
 export function Contact() {
+  const { lang, t } = useI18n();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
@@ -30,7 +32,7 @@ export function Contact() {
     if (!canSend || !captchaToken) return;
     setStatus('sending');
     try {
-      const res = await postContact({ name, email, message, captchaToken });
+      const res = await postContact({ name, email, message, captchaToken, lang });
       setStatus('success');
       setFeedback(res.message);
       setName('');
@@ -41,7 +43,7 @@ export function Contact() {
       window.setTimeout(() => setStatus('idle'), 4000);
     } catch (err) {
       setStatus('error');
-      setFeedback(err instanceof Error ? err.message : 'Senden fehlgeschlagen.');
+      setFeedback(err instanceof Error ? err.message : t.contact.errorFallback);
     }
   }
 
@@ -67,7 +69,7 @@ export function Contact() {
             fontWeight: 'var(--fw-bold)' as unknown as number,
           }}
         >
-          Kontakt
+          {t.contact.title}
         </h2>
 
         <Card>
@@ -80,25 +82,24 @@ export function Contact() {
                 lineHeight: 'var(--leading-relaxed)',
               }}
             >
-              Schreibe mir gerne eine Nachricht bei Fragen oder Feedback. Ich freue mich auf den
-              Austausch und vielen Dank für deinen Besuch!
+              {t.contact.intro}
             </p>
-            <Input label="Name" placeholder="Dein Name" value={name} onChange={(e) => setName(e.target.value)} />
+            <Input label={t.contact.name} placeholder={t.contact.namePlaceholder} value={name} onChange={(e) => setName(e.target.value)} />
             <Input
-              label="E-Mail"
+              label={t.contact.email}
               type="email"
-              placeholder="name@example.com"
+              placeholder={t.contact.emailPlaceholder}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
             <Textarea
-              label="Nachricht"
+              label={t.contact.message}
               rows={4}
-              placeholder="Deine Nachricht …"
+              placeholder={t.contact.messagePlaceholder}
               value={message}
               onChange={(e) => setMessage(e.target.value)}
             />
-            <Checkbox checked={agreed} onChange={setAgreed} label="Ich stimme der Datenschutzerklärung zu." />
+            <Checkbox checked={agreed} onChange={setAgreed} label={t.contact.consent} />
             <Captcha onVerify={setCaptchaToken} />
             {status === 'error' && (
               <span style={{ color: 'var(--danger)', fontSize: 'var(--text-sm)' }}>{feedback}</span>
@@ -113,7 +114,7 @@ export function Contact() {
                   <img src={icons.send} width={16} height={16} alt="" aria-hidden="true" style={{ display: 'block' }} />
                 }
               >
-                {status === 'sending' ? 'Senden …' : 'Senden'}
+                {status === 'sending' ? t.contact.sending : t.contact.send}
               </Button>
             </div>
           </form>
@@ -142,7 +143,7 @@ export function Contact() {
           }}
         >
           <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--success)' }} />
-          {feedback || 'Nachricht erfolgreich gesendet — danke!'}
+          {feedback || t.contact.successToast}
         </div>
       )}
     </section>

@@ -1,7 +1,8 @@
 import { Button, Card } from '../ds';
 import { CachedImage } from './CachedImage';
 import { useTypewriter } from '../hooks/useTypewriter';
-import { HERO_WORDS, PORTRAIT_IMAGE_NAME } from '../constants';
+import { useI18n } from '../i18n/LanguageContext';
+import { PORTRAIT_IMAGE_NAME } from '../constants';
 
 /** Scrolls smoothly to a section by id. */
 function scrollToId(id: string): void {
@@ -10,7 +11,8 @@ function scrollToId(id: string): void {
 
 /** HERO / START section — greeting with typewriter animation and portrait. */
 export function Hero() {
-  const word = useTypewriter(HERO_WORDS);
+  const { t } = useI18n();
+  const word = useTypewriter(t.hero.words);
 
   return (
     <section
@@ -47,7 +49,7 @@ export function Hero() {
               marginBottom: 'var(--space-5)',
             }}
           >
-            Build · Reflect · Improve
+            {t.hero.eyebrow}
           </div>
 
           <h1
@@ -60,7 +62,7 @@ export function Hero() {
               color: 'var(--text-primary)',
             }}
           >
-            Hallo, ich bin
+            {t.hero.greeting}
             <span className="type-line">
               <span className="type-word">{word}</span>
               <span className="type-caret" aria-hidden="true" />
@@ -78,18 +80,17 @@ export function Hero() {
                   textAlign: 'left',
                 }}
               >
-                Willkommen auf meiner Webseite! Hier lernst du meinen persönlichen Werdegang und meine
-                Leidenschaft für die Softwareentwicklung kennen.
+                {t.hero.welcome}
               </p>
             </Card>
           </div>
 
           <div style={{ display: 'flex', gap: 'var(--space-4)', flexWrap: 'wrap' }}>
             <Button variant="primary" size="lg" onClick={() => scrollToId('portfolio')}>
-              Projekte ansehen
+              {t.hero.ctaProjects}
             </Button>
             <Button variant="primary" size="lg" onClick={() => scrollToId('contact')}>
-              Kontakt aufnehmen
+              {t.hero.ctaContact}
             </Button>
           </div>
         </div>

@@ -1,4 +1,5 @@
 import type { Portfolio } from '../types/portfolio';
+import type { Language } from '../i18n/translations';
 
 /**
  * Base URL of the backend API. Empty in development so requests hit `/api` and
@@ -21,6 +22,8 @@ export interface ContactPayload {
   email: string;
   message: string;
   captchaToken: string;
+  /** UI language, so the backend can localize its response message. */
+  lang: Language;
 }
 
 /** Response returned by the contact endpoint. */
@@ -31,11 +34,15 @@ export interface ContactResponse {
 }
 
 /**
- * Fetches the aggregated portfolio from the backend.
+ * Fetches the aggregated portfolio from the backend in the given language.
+ * @param lang Content language requested from the backend.
+ * @param signal Optional abort signal.
  * @throws Error when the request fails.
  */
-export async function fetchPortfolio(signal?: AbortSignal): Promise<Portfolio> {
-  const response = await fetch(`${API_BASE_URL}/api/portfolio`, { signal });
+export async function fetchPortfolio(lang: Language, signal?: AbortSignal): Promise<Portfolio> {
+  const response = await fetch(`${API_BASE_URL}/api/portfolio?lang=${encodeURIComponent(lang)}`, {
+    signal,
+  });
   if (!response.ok) {
     throw new Error(`Failed to load portfolio (HTTP ${response.status})`);
   }
