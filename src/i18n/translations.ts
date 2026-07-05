@@ -58,13 +58,16 @@ export interface Messages {
     emailPlaceholder: string;
     message: string;
     messagePlaceholder: string;
-    consent: string;
+    /** Consent text split around the inline "privacy policy" link. */
+    consentBefore: string;
+    consentLink: string;
+    consentAfter: string;
     send: string;
     sending: string;
     successToast: string;
     errorFallback: string;
   };
-  captcha: { label: string; devHint: string };
+  captcha: { label: string; devHint: string; loadError: string };
   footer: { imprint: string };
   a11y: { openMenu: string; closeMenu: string };
   language: { label: string; names: Record<Language, string> };
@@ -115,7 +118,9 @@ const de: Messages = {
     emailPlaceholder: 'name@example.com',
     message: 'Nachricht',
     messagePlaceholder: 'Deine Nachricht …',
-    consent: 'Ich stimme der Datenschutzerklärung zu.',
+    consentBefore: 'Ich stimme der ',
+    consentLink: 'Datenschutzerklärung',
+    consentAfter: ' zu.',
     send: 'Senden',
     sending: 'Senden …',
     successToast: 'Nachricht erfolgreich gesendet — danke!',
@@ -125,6 +130,7 @@ const de: Messages = {
     label: 'Ich bin kein Roboter.',
     devHint:
       'Entwicklungsmodus: Platzhalter-Captcha. Für die Produktion einen Anbieter (reCAPTCHA/hCaptcha) via VITE_CAPTCHA_SITE_KEY einbinden.',
+    loadError: 'Captcha konnte nicht geladen werden. Bitte lade die Seite neu.',
   },
   footer: { imprint: 'Impressum' },
   a11y: { openMenu: 'Menü öffnen', closeMenu: 'Menü schließen' },
@@ -176,7 +182,9 @@ const en: Messages = {
     emailPlaceholder: 'name@example.com',
     message: 'Message',
     messagePlaceholder: 'Your message …',
-    consent: 'I agree to the privacy policy.',
+    consentBefore: 'I agree to the ',
+    consentLink: 'privacy policy',
+    consentAfter: '.',
     send: 'Send',
     sending: 'Sending …',
     successToast: 'Message sent successfully — thank you!',
@@ -186,6 +194,7 @@ const en: Messages = {
     label: "I'm not a robot.",
     devHint:
       'Development mode: placeholder captcha. For production, integrate a provider (reCAPTCHA/hCaptcha) via VITE_CAPTCHA_SITE_KEY.',
+    loadError: 'Captcha could not be loaded. Please reload the page.',
   },
   footer: { imprint: 'Legal notice' },
   a11y: { openMenu: 'Open menu', closeMenu: 'Close menu' },

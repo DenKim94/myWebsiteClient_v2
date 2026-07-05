@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { App } from './App';
 import { LanguageProvider } from './i18n/LanguageContext';
 import { PortfolioProvider } from './context/PortfolioContext';
+import { LegalProvider } from './context/LegalContext';
 import './styles/index.css';
 
 const container = document.getElementById('root');
@@ -12,7 +13,9 @@ createRoot(container).render(
   <StrictMode>
     <LanguageProvider>
       <PortfolioProvider>
-        <App />
+        <LegalProvider>
+          <App />
+        </LegalProvider>
       </PortfolioProvider>
     </LanguageProvider>
   </StrictMode>,

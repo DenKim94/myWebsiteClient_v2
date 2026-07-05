@@ -3,6 +3,7 @@ import { Button, Card, Checkbox, Input, Textarea } from '../ds';
 import { Captcha } from './Captcha';
 import { postContact } from '../api/apiClient';
 import { useI18n } from '../i18n/LanguageContext';
+import { useLegal } from '../context/LegalContext';
 import { icons } from '../assets/icons';
 
 type Status = 'idle' | 'sending' | 'success' | 'error';
@@ -10,6 +11,7 @@ type Status = 'idle' | 'sending' | 'success' | 'error';
 /** CONTACT section — form wired to the backend e-mail service with captcha. */
 export function Contact() {
   const { lang, t } = useI18n();
+  const { open: openLegal } = useLegal();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
@@ -100,7 +102,19 @@ export function Contact() {
               value={message}
               onChange={(e) => setMessage(e.target.value)}
             />
-            <Checkbox checked={agreed} onChange={setAgreed} label={t.contact.consent} />
+            <Checkbox
+              checked={agreed}
+              onChange={setAgreed}
+              label={
+                <>
+                  {t.contact.consentBefore}
+                  <button type="button" className="inline-link" onClick={() => openLegal('datenschutz')}>
+                    {t.contact.consentLink}
+                  </button>
+                  {t.contact.consentAfter}
+                </>
+              }
+            />
             <Captcha onVerify={setCaptchaToken} />
             {status === 'error' && (
               <span style={{ color: 'var(--danger)', fontSize: 'var(--text-sm)' }}>{feedback}</span>

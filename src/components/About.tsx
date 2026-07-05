@@ -88,13 +88,18 @@ function TimelineItem({ top, mid, sub, period, duties }: TimelineItemProps) {
   );
 }
 
-/** Manually navigable photo slider for the "Lebensweg" tab. */
+/**
+ * Manually navigable photo slider for the "Lebensweg" tab. The caller only
+ * renders this when at least one image is available (backend-driven); an empty
+ * list therefore never reaches this component.
+ */
 function PhotoSlider({ images }: { images: string[] }) {
   const { t } = useI18n();
-  const slots = images.length > 0 ? images : [''];
   const [idx, setIdx] = useState(0);
-  const go = (n: number) => setIdx((n + slots.length) % slots.length);
-  const activeName = slots[idx];
+  // Guard against an out-of-range index if the image list ever shrinks.
+  const activeIdx = Math.min(idx, images.length - 1);
+  const go = (n: number) => setIdx((n + images.length) % images.length);
+  const activeName = images[activeIdx];
 
   return (
     <div className="photo-slider">
@@ -102,29 +107,25 @@ function PhotoSlider({ images }: { images: string[] }) {
         <button
           type="button"
           className="slider-arrow prev"
-          onClick={() => go(idx - 1)}
+          onClick={() => go(activeIdx - 1)}
           aria-label={t.about.prevPhoto}
         >
           <span>‹</span>
         </button>
 
         <div className="slider-viewport">
-          {activeName ? (
-            <CachedImage
-              key={activeName}
-              name={activeName}
-              alt={t.about.photoAlt(idx + 1)}
-              className="slider-photo"
-            />
-          ) : (
-            <div className="slot-empty">{t.about.noPhoto}</div>
-          )}
+          <CachedImage
+            key={activeName}
+            name={activeName}
+            alt={t.about.photoAlt(activeIdx + 1)}
+            className="slider-photo"
+          />
         </div>
 
         <button
           type="button"
           className="slider-arrow next"
-          onClick={() => go(idx + 1)}
+          onClick={() => go(activeIdx + 1)}
           aria-label={t.about.nextPhoto}
         >
           <span>›</span>
@@ -132,13 +133,13 @@ function PhotoSlider({ images }: { images: string[] }) {
       </div>
 
       <div className="slider-dots" role="tablist" aria-label={t.about.selectPhoto}>
-        {slots.map((name, i) => (
+        {images.map((name, i) => (
           <button
             type="button"
-            key={name || i}
-            className={'dot' + (i === idx ? ' active' : '')}
+            key={name}
+            className={'dot' + (i === activeIdx ? ' active' : '')}
             aria-label={t.about.showPhoto(i + 1)}
-            aria-current={i === idx}
+            aria-current={i === activeIdx}
             onClick={() => go(i)}
           />
         ))}
@@ -209,22 +210,28 @@ export function About() {
                   duties={e.duties}
                 />
               ))}
-            {tab === 'life' && (
-              <div className="about-life">
-                <PhotoSlider images={about?.images ?? []} />
-                <p
-                  style={{
-                    margin: 'var(--space-6) 0 0',
-                    whiteSpace: 'pre-line',
-                    color: 'var(--text-secondary)',
-                    fontSize: 'var(--text-base)',
-                    lineHeight: 'var(--leading-relaxed)',
-                  }}
-                >
-                  {about?.text ?? ''}
-                </p>
-              </div>
-            )}
+            {tab === 'life' &&
+              (() => {
+                const lifeImages = about?.images ?? [];
+                const hasImages = lifeImages.length > 0;
+                return (
+                  <div className="about-life">
+                    {hasImages && <PhotoSlider images={lifeImages} />}
+                    <p
+                      style={{
+                        /* Ohne Fotoslider entfällt der obere Abstand. */
+                        margin: hasImages ? 'var(--space-6) 0 0' : 0,
+                        whiteSpace: 'pre-line',
+                        color: 'var(--text-secondary)',
+                        fontSize: 'var(--text-base)',
+                        lineHeight: 'var(--leading-relaxed)',
+                      }}
+                    >
+                      {about?.text ?? ''}
+                    </p>
+                  </div>
+                );
+              })()}
           </div>
         </Card>
       </div>
