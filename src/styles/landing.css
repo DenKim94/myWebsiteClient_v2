@@ -227,6 +227,19 @@ section { scroll-margin-top: var(--header-height); }
   .type-caret { animation: none; opacity: 1; }
 }
 
+/* ---- Hero-CTA-Buttons ---- */
+/* Beide Buttons stehen nebeneinander (mit Umbruch als Fallback auf sehr schmalen
+   Viewports). In der Desktop-Ansicht (>=901px) werden sie zusätzlich horizontal
+   innerhalb des Copy-Containers zentriert. */
+.hero-cta {
+  display: flex;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+@media (min-width: 901px) {
+  .hero-cta { justify-content: center; }
+}
+
 /* ---- Portrait ---- */
 .portrait {
   position: relative;
@@ -369,14 +382,13 @@ section { scroll-margin-top: var(--header-height); }
   border: 1px solid var(--border-glass);
   background: rgba(255, 255, 255, 0.04);
 }
-/* reCAPTCHA-Widget ist 304px breit; auf schmalen Viewports skalieren wir es
-   leicht herunter, damit es nicht über den Formularrand hinausragt. */
-.captcha-recaptcha { min-height: 78px; }
-@media (max-width: 360px) {
-  .captcha-recaptcha {
-    transform: scale(0.86);
-    transform-origin: left top;
-  }
+/* Das reCAPTCHA-Widget hat eine feste Breite von 304px und reflowt nicht. Der
+   Wrapper misst die verfügbare Breite (ResizeObserver in Captcha.tsx) und skaliert
+   das Widget auf schmalen Viewports proportional herunter, damit es nicht über den
+   Formularrand hinausragt. `overflow: hidden` fängt etwaige Sub-Pixel-Reste ab. */
+.captcha-recaptcha {
+  width: 100%;
+  overflow: hidden;
 }
 
 /* ---- Inline-Link (z.B. „Datenschutzerklärung" im Consent-Text) ---- */

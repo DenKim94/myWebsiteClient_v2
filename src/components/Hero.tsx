@@ -87,7 +87,7 @@ export function Hero() {
             </Card>
           </div>
 
-          <div style={{ display: 'flex', gap: 'var(--space-4)', flexWrap: 'wrap' }}>
+          <div className="hero-cta">
             <Button variant="primary" size="lg" onClick={() => scrollToId('portfolio')}>
               {t.hero.ctaProjects}
             </Button>

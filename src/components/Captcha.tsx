@@ -32,6 +32,10 @@ declare global {
   }
 }
 
+/** Intrinsic pixel size of the reCAPTCHA v2 "normal" widget iframe. */
+const RECAPTCHA_WIDTH = 304;
+const RECAPTCHA_HEIGHT = 78;
+
 /** Singleton promise that resolves once the reCAPTCHA API script is ready. */
 let recaptchaLoader: Promise<GReCaptcha> | null = null;
 
@@ -73,8 +77,28 @@ function loadRecaptcha(): Promise<GReCaptcha> {
  */
 function RecaptchaWidget({ siteKey, onVerify }: { siteKey: string; onVerify: CaptchaProps['onVerify'] }) {
   const { t } = useI18n();
+  const wrapRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [failed, setFailed] = useState(false);
+  const [scale, setScale] = useState(1);
+
+  // Responsive scaling: the reCAPTCHA iframe has a fixed 304px width and does not
+  // reflow. On narrow viewports (mobile) we scale the widget down so it fits its
+  // container instead of overflowing the form (see design bug report).
+  useEffect(() => {
+    const wrap = wrapRef.current;
+    if (!wrap) return;
+
+    const update = () => {
+      const available = wrap.clientWidth;
+      setScale(available > 0 ? Math.min(1, available / RECAPTCHA_WIDTH) : 1);
+    };
+
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(wrap);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -106,7 +130,15 @@ function RecaptchaWidget({ siteKey, onVerify }: { siteKey: string; onVerify: Cap
 
   return (
     <div className="captcha-box">
-      <div ref={containerRef} className="captcha-recaptcha" />
+      {/* Wrapper measures the available width and reserves the scaled height so the
+          scaled-down widget leaves no gap and never spills past the container. */}
+      <div
+        ref={wrapRef}
+        className="captcha-recaptcha"
+        style={{ height: RECAPTCHA_HEIGHT * scale }}
+      >
+        <div ref={containerRef} style={{ transform: `scale(${scale})`, transformOrigin: 'top left' }} />
+      </div>
       {failed && (
         <span style={{ fontSize: 'var(--text-2xs)', color: 'var(--danger)' }}>{t.captcha.loadError}</span>
       )}
