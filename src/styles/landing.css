@@ -237,7 +237,10 @@ section { scroll-margin-top: var(--header-height); }
   flex-wrap: wrap;
 }
 @media (min-width: 901px) {
-  .hero-cta { justify-content: center; }
+  .hero-cta { 
+    justify-content: flex-start; 
+    margin-left: var(--space-2);
+  }
 }
 
 /* ---- Portrait ---- */
