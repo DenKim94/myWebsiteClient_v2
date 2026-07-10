@@ -142,7 +142,7 @@ const en: Messages = {
   nav: { start: 'Start', portfolio: 'Portfolio', about: 'About me', contact: 'Contact' },
   hero: {
     eyebrow: 'Build · Reflect · Improve',
-    greeting: "Hi, I'm",
+    greeting: "Hey, I'm",
     words: ['Denis', 'a Software Developer'],
     welcome:
       'Welcome to my website! Here you can get to know my personal career path and my passion for software development.',
