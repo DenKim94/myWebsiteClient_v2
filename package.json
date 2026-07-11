@@ -1,6 +1,6 @@
 {
   "name": "portfolio-client",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Frontend (React 19 + TypeScript + Vite) for the personal portfolio website.",
   "private": true,
   "type": "module",
