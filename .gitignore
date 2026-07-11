@@ -7,5 +7,7 @@ coverage/
 .env.local
 !.env.example
 *.log
+# macOS Finder-Metadaten – rekursiv (Muster ohne Slash greift in jedem Unterordner)
 .DS_Store
+**/.DS_Store
 assets/*.html
