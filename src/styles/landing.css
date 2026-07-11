@@ -442,6 +442,10 @@ section { scroll-margin-top: var(--header-height); }
   display: flex;
   flex-direction: column;
   width: min(720px, 100%);
+  /* Als Flex-Item nicht über die (schmale) Viewport-Breite hinaus wachsen:
+     erlaubt dem Dialog, seine `width` einzuhalten, statt vom Inhalt
+     (z.B. langer Titel „Datenschutzerklärung") breiter gezogen zu werden. */
+  min-width: 0;
   max-height: min(82vh, 860px);
   background: rgba(20, 17, 30, 0.96);
   -webkit-backdrop-filter: blur(var(--blur-glass));
@@ -462,9 +466,13 @@ section { scroll-margin-top: var(--header-height); }
 }
 .legal-title {
   margin: 0;
+  min-width: 0;
   font-size: var(--text-xl);
   font-weight: var(--fw-bold);
   color: var(--text-primary);
+  /* Langer Titel (ein Wort) muss auf schmalen Viewports umbrechen dürfen. */
+  overflow-wrap: break-word;
+  hyphens: auto;
 }
 .legal-close {
   flex: none;
@@ -482,8 +490,12 @@ section { scroll-margin-top: var(--header-height); }
 .legal-body {
   padding: var(--space-6);
   overflow-y: auto;
+  overflow-x: hidden;
   overscroll-behavior: contain;
   text-align: left;
+  /* Lange, nicht umbrechbare Tokens (E-Mail-Adresse, URLs) umbrechen lassen –
+     `overflow-wrap` vererbt an alle Textblöcke im Body. */
+  overflow-wrap: break-word;
 }
 .legal-body::-webkit-scrollbar { width: 8px; }
 .legal-body::-webkit-scrollbar-track { background: transparent; }
@@ -539,6 +551,15 @@ section { scroll-margin-top: var(--header-height); }
   text-underline-offset: 2px;
 }
 .legal-links a:hover { color: #fff; }
+
+/* Legal-Modal auf schmalen Viewports: kleinere Überschrift, kompaktere Ränder,
+   damit der Dialog samt langem Titel vollständig im Viewport bleibt. */
+@media (max-width: 560px) {
+  .legal-overlay { padding: var(--space-4); }
+  .legal-dialog-header { padding: var(--space-4) var(--space-5); }
+  .legal-title { font-size: var(--text-lg); }
+  .legal-body { padding: var(--space-5); }
+}
 
 /* Slide-up Entrance */
 .reveal { opacity: 0; transform: translateY(20px); }
