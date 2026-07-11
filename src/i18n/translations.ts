@@ -143,7 +143,7 @@ const en: Messages = {
   hero: {
     eyebrow: 'Build · Reflect · Improve',
     greeting: "Hey, I'm",
-    words: ['Denis', 'a Software Engineer'],
+    words: ['Denis', 'a Software Developer'],
     welcome:
       'Welcome to my website! Here you can get to know my personal career path and my passion for software development.',
     ctaProjects: 'View projects',
