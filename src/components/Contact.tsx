@@ -141,9 +141,17 @@ export function Contact() {
           role="status"
           style={{
             position: 'fixed',
-            left: '50%',
+            /* Zentriert über left/right + margin:auto (statt left:50% + translateX),
+               damit der Toast die volle verfügbare Breite nutzen kann und nicht auf
+               ~50% Viewport-Breite schrumpft (sonst umbricht der Text auf schmalen
+               Screens unnötig und das Icon wird gequetscht). */
+            left: 'var(--space-4)',
+            right: 'var(--space-4)',
             bottom: 'var(--space-12)',
-            transform: 'translateX(-50%)',
+            marginInline: 'auto',
+            width: 'fit-content',
+            maxWidth: 'min(92vw, 420px)',
+            boxSizing: 'border-box',
             zIndex: 10000,
             display: 'flex',
             alignItems: 'center',
@@ -157,7 +165,17 @@ export function Contact() {
             fontSize: 'var(--text-sm)',
           }}
         >
-          <span style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--success)' }} />
+          <span
+            style={{
+              /* flexShrink:0 verhindert, dass der Punkt bei mehrzeiligem Text zu
+                 einem dünnen Streifen zusammengequetscht/abgeschnitten wird. */
+              flexShrink: 0,
+              width: 8,
+              height: 8,
+              borderRadius: '50%',
+              background: 'var(--success)',
+            }}
+          />
           {feedback || t.contact.successToast}
         </div>
       )}
