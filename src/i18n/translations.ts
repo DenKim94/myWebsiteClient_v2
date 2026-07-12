@@ -155,7 +155,7 @@ const en: Messages = {
       'As part of my continuous professional development, I independently realize various development projects in my free time — from conception through implementation to deployment.',
     live: 'Live',
     liveTitle: 'A live version is available',
-    repo: 'GitHub repo',
+    repo: 'GitHub Repo',
     repoTitle: 'Source code available on GitHub',
     openLive: 'Open live version',
     viewSource: 'View source code',
