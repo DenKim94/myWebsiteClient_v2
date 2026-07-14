@@ -47,4 +47,11 @@ export interface Portfolio {
   education: Education[];
   projects: Project[];
   social: SocialLink[];
+  /**
+   * Content-version token per image file name (from the backend). Appended to
+   * the image URL as a `?v=` cache-buster so a replaced image is fetched fresh
+   * despite the long-lived, immutable image cache. Optional for graceful
+   * degradation against an older backend that does not send it yet.
+   */
+  imageVersions?: Record<string, string>;
 }

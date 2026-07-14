@@ -11,9 +11,13 @@ export const API_BASE_URL: string = import.meta.env.VITE_API_BASE_URL ?? '';
 /**
  * Builds the absolute URL for a backend image/icon served by the API.
  * @param name File name of the image (as referenced by the database).
+ * @param version Optional content-version token (see `Portfolio.imageVersions`).
+ *   Appended as a `?v=` query so a changed image gets a new URL and bypasses the
+ *   long-lived, immutable image cache.
  */
-export function imageUrl(name: string): string {
-  return `${API_BASE_URL}/api/images/${encodeURIComponent(name)}`;
+export function imageUrl(name: string, version?: string): string {
+  const url = `${API_BASE_URL}/api/images/${encodeURIComponent(name)}`;
+  return version ? `${url}?v=${encodeURIComponent(version)}` : url;
 }
 
 /** Payload sent to the contact endpoint. */

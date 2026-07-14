@@ -1,5 +1,6 @@
 import { useEffect, useState, type CSSProperties } from 'react';
 import { getCachedImage } from '../api/imageCache';
+import { usePortfolio } from '../context/PortfolioContext';
 
 interface CachedImageProps {
   /** Backend image file name (as referenced by the database). */
@@ -16,14 +17,26 @@ interface CachedImageProps {
  * binary is fetched from `/api/images/:name` once and reused across renders.
  */
 export function CachedImage({ name, alt, className, style, fallback }: CachedImageProps) {
+  const { portfolio } = usePortfolio();
+  // Content-version token for this image (once the portfolio has loaded). Used as
+  // a `?v=` cache-buster so a replaced image is re-fetched despite immutable HTTP
+  // caching. May be undefined on the first render (portfolio still loading).
+  const version = portfolio?.imageVersions?.[name];
+
   const [src, setSrc] = useState<string | null>(null);
   const [failed, setFailed] = useState(false);
 
+  // Reset the visible image only when the underlying image (name) changes — not
+  // when the version arrives — so the image doesn't flash back to the fallback
+  // box while the freshly versioned URL loads.
   useEffect(() => {
-    let cancelled = false;
     setSrc(null);
     setFailed(false);
-    getCachedImage(name)
+  }, [name]);
+
+  useEffect(() => {
+    let cancelled = false;
+    getCachedImage(name, version)
       .then((url) => {
         if (!cancelled) setSrc(url);
       })
@@ -33,7 +46,7 @@ export function CachedImage({ name, alt, className, style, fallback }: CachedIma
     return () => {
       cancelled = true;
     };
-  }, [name]);
+  }, [name, version]);
 
   if (failed || !src) {
     // Reserve the layout box; keeps the design stable while loading.

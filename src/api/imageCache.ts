@@ -11,14 +11,18 @@ const cache = new Map<string, Promise<string>>();
 
 /**
  * Returns a (cached) object URL for a backend image. Concurrent requests for the
- * same image share a single fetch.
+ * same image share a single fetch. The cache is keyed by name **and** version, so
+ * a new content version (see `Portfolio.imageVersions`) is fetched fresh instead
+ * of returning the previously cached binary.
  * @param name File name of the image (as referenced by the database).
+ * @param version Optional content-version token appended to the request URL.
  */
-export function getCachedImage(name: string): Promise<string> {
-  const existing = cache.get(name);
+export function getCachedImage(name: string, version?: string): Promise<string> {
+  const key = version ? `${name}?v=${version}` : name;
+  const existing = cache.get(key);
   if (existing) return existing;
 
-  const promise = fetch(imageUrl(name))
+  const promise = fetch(imageUrl(name, version))
     .then((response) => {
       if (!response.ok) throw new Error(`Image "${name}" failed to load (HTTP ${response.status})`);
       return response.blob();
@@ -26,11 +30,11 @@ export function getCachedImage(name: string): Promise<string> {
     .then((blob) => URL.createObjectURL(blob))
     .catch((error: unknown) => {
       // Remove the failed entry so a later attempt can retry.
-      cache.delete(name);
+      cache.delete(key);
       throw error;
     });
 
-  cache.set(name, promise);
+  cache.set(key, promise);
   return promise;
 }
 
